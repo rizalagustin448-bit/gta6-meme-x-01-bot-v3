@@ -11,9 +11,10 @@ mkdirSync(outDir, { recursive: true });
 
 const postPath = join(repoRoot, "POST.json");
 const postRaw = readFileSync(postPath, "utf8");
-const post = JSON.parse(postRaw) as { post_url?: string };
-if (typeof post.post_url !== "string" || post.post_url.length === 0) {
-  throw new Error("POST.json must carry a non-empty post_url string");
+const post = JSON.parse(postRaw) as { url?: string; post_url?: string };
+const postUrl = post.url ?? post.post_url;
+if (typeof postUrl !== "string" || postUrl.length === 0) {
+  throw new Error("POST.json must carry a non-empty url (or post_url) string");
 }
 
 const picturePath = join(repoRoot, "meme.png");
@@ -28,4 +29,4 @@ if (!pictureHead.equals(pngMagic)) {
 
 copyFileSync(postPath, join(outDir, "POST.json"));
 copyFileSync(picturePath, join(outDir, "meme.png"));
-console.log(`meme v3 ready: ${post.post_url} -> ${outDir}`);
+console.log(`meme v3 ready: ${postUrl} -> ${outDir}`);
